@@ -22,6 +22,7 @@ you do not need to setup a local server to run the project.
 
 ## Testing
 
+(These all passed before changing Hello World)
 To run the tests for the project, run the following command:
 
 ```bash
@@ -30,3 +31,4 @@ npm test
 
 ## Running
 
+Use the Live Preview on index.html to display the site.
