@@ -1,4 +1,4 @@
-import {helloWorld, add} from '../js/main.js';
+import {helloWorld, add, fetchRandomJoke, fetch5RandomJokes } from '../js/main.js';
 // Import the sinon library to allow us to create a spy on the console.log function
 import sinon from 'sinon';
 
@@ -46,5 +46,43 @@ QUnit.module('main.js tests', function() {
         //Assert
         assert.equal(result, expected, 'add(2, -3) should return -1');
     });
+
+    QUnit.test('fetchRandomJoke returns a single string', async function(assert) {
+    const fetchStub = sinon.stub(globalThis, 'fetch').resolves({
+        ok: true,
+        json: async () => ({ setup: 'Knock knock', punchline: 'Who’s there?' })
+    });
+
+    try {
+        const joke = await fetchRandomJoke();
+        assert.equal(typeof joke, 'string', 'Should return a string');
+    } finally {
+        fetchStub.restore();
+    }
+    });
+
+    QUnit.test('fetch5RandomJokes returns an array of 5 strings', async function(assert) {
+    const fakeJokes = Array.from({ length: 10 }, (_, i) => ({
+        setup: `Setup ${i}`,
+        punchline: `Punchline ${i}`
+    }));
+
+    const fetchStub = sinon.stub(globalThis, 'fetch').resolves({
+        ok: true,
+        json: async () => fakeJokes
+    });
+
+    try {
+        const jokes = await fetch5RandomJokes();
+        assert.ok(Array.isArray(jokes), 'Should return an array');
+        assert.equal(jokes.length, 5, 'Array should contain exactly 5 items');
+        jokes.forEach(j => assert.equal(typeof j, 'string', 'Each item should be a string'));
+    } finally {
+        fetchStub.restore();
+    }
+    });
+
+
+
 
 });
